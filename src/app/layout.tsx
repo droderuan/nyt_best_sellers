@@ -1,9 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import MainTemplate from "@/components/layout/template/Main";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <MainTemplate appName={`New York Times\nBest Sellers`}></MainTemplate>
+      <MainTemplate appName={`New York Times\nBest Sellers`}>
+        {children}
+      </MainTemplate>
     </html>
   );
 }
