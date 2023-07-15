@@ -6,7 +6,7 @@ interface Page {
 
 const Page: React.FC<Page> = ({ children }) => {
   return (
-    <main className="flex flex-col items-center justify-center gap-8 px-4 md:px-2 lg:flex-row">
+    <main className="flex flex-col items-center justify-center gap-8 px-4 md:px-2">
       <div className="flex-1 w-full">{children}</div>
     </main>
   );
