@@ -27,8 +27,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
           </Suspense>
         </div>
         <div>
-          <h3 className="font-medium line-clamp-2 text-ellipsis">
-            {book.title}
+          <h3 className="font-medium line-clamp-1 text-ellipsis after:content-[attr(before)]">
+            <span title={book.title}>{book.title}</span>
           </h3>
           <SpanDisplay
             display="Author:"
@@ -46,8 +46,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             defaultValue="Missing"
           />
           <span className="text-xs ">Description</span>
-          <p className="text-sm line-clamp-4 text-ellipsis">
-            {book.description}
+          <p className="text-sm line-clamp-3 after:content-[attr(before)] text-ellipsis content">
+            <span title={book.description}>{book.description}</span>
           </p>
         </div>
       </div>
@@ -55,7 +55,13 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         <p className="font-normal text-xs mb-1">Check out!</p>
         <div className="flex items-center flex-wrap gap-1">
           {book.buy_links.map((buyLink) => (
-            <Chip key={buyLink.name} value={buyLink.name} />
+            <Chip
+              isLink
+              link={buyLink.url}
+              alt="link to buy a book"
+              key={buyLink.name}
+              value={buyLink.name}
+            />
           ))}
         </div>
       </div>

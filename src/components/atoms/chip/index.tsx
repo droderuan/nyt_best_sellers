@@ -8,9 +8,9 @@ interface ChipButtonProps
 export interface ChipProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   value: string | number;
-  isLink?: false;
-  link?: string;
-  alt?: string;
+  isLink?: boolean;
+  link: string;
+  alt: string;
 }
 
 export interface ChipLinkProps
