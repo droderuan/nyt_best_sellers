@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import MainTemplate from "@/components/layout/template/Main";
+import AppConfig from "@/hooks/appConfig";
 
 export const metadata: Metadata = {
   title: "Best Sellers - NY Times",
@@ -14,9 +15,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <MainTemplate appName={`New York Times\nBest Sellers`}>
-        {children}
-      </MainTemplate>
+      <AppConfig>
+        <MainTemplate appName={`New York Times\nBest Sellers`}>
+          {children}
+        </MainTemplate>
+      </AppConfig>
     </html>
   );
 }

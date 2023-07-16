@@ -28,3 +28,15 @@ export interface BookDto {
     url: string;
   }[];
 }
+
+export interface ListBookDto {
+  list_id: number,
+  list_name: string,
+  list_name_encoded: string,
+  display_name: string,
+  updated: string,
+  list_image: string,
+  list_image_width: string,
+  list_image_height: string,
+  books: BookDto[]
+}
