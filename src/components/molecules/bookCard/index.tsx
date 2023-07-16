@@ -22,6 +22,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
               alt={`${book.title}-book-cover-img`}
               src={book.book_image}
               fill
+              sizes="h-44 w-32"
             />
           </Suspense>
         </div>
