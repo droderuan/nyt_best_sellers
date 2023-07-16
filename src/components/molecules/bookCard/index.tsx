@@ -1,12 +1,9 @@
 import { BookDto } from "@/client/dtos";
+import Chip from "@/components/atoms/chip";
 import Skeleton from "@/components/atoms/skeleton";
-import SpanDisplay from "@/components/atoms/SpanDisplay";
-import SvgIcon from "@/components/atoms/SvgIcon";
+import SpanDisplay from "@/components/atoms/spanDisplay";
 import Image from "next/image";
-import Link from "next/link";
 import { Suspense } from "react";
-import AmazonIcon from "../../../../public/amazon.svg";
-import AppleBooksIcon from "../../../../public/apple-ibooks.svg";
 
 export interface BookCardProps {
   book: BookDto;
@@ -47,23 +44,18 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             value={book.weeks_on_list}
             defaultValue="Missing"
           />
+          <span className="text-xs ">Description</span>
+          <p className="text-sm line-clamp-4 text-ellipsis">
+            {book.description}
+          </p>
         </div>
       </div>
       <div>
         <p className="font-normal text-xs mb-1">Check out!</p>
-        <div className="flex items-center gap-1">
-          <SvgIcon
-            size="normal"
-            src={AmazonIcon}
-            alt="Buy on amazon"
-            link="http:\/\/www.amazon.com\/Ends-Us-Novel-Colleen-Hoover-ebook\/dp\/B0176M3U10?tag=NYTBSREV-20"
-          />
-          <SvgIcon
-            size="sm"
-            src={AppleBooksIcon}
-            alt="Buy on apple books"
-            link="http:\/\/www.amazon.com\/Ends-Us-Novel-Colleen-Hoover-ebook\/dp\/B0176M3U10?tag=NYTBSREV-20"
-          />
+        <div className="flex items-center flex-wrap gap-1">
+          {book.buy_links.map((buyLink) => (
+            <Chip key={buyLink.name} value={buyLink.name} />
+          ))}
         </div>
       </div>
     </div>
