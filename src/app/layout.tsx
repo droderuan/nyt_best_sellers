@@ -6,6 +6,9 @@ import AppConfig from "@/hooks/appConfig";
 export const metadata: Metadata = {
   title: "Best Sellers - NY Times",
   description: "The best sellers list from NY Times",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
