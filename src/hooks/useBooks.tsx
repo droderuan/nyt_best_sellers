@@ -1,5 +1,3 @@
-"use client";
-
 import React, {
   createContext,
   useState,
@@ -7,7 +5,7 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { ListBookDto } from "../client/dtos";
+import { ListBookDto } from "./client/dtos";
 
 interface BooksContextData {
   toggleFavoriteList(listName: string): void;
@@ -19,31 +17,19 @@ interface BooksProvider {
   children: React.ReactNode;
 }
 
-export interface ToastMessage {
-  id: number;
-  type?: "info" | "success" | "error";
-  message: string;
-}
-
-const BASE_STORAGE = "ny-times-best-sellers";
-
 const BooksContext = createContext<BooksContextData>({} as BooksContextData);
 
 const BooksProvider: React.FC<BooksProvider> = ({ children }) => {
   const [favoriteList, setFavoriteList] = useState<string[]>([]);
 
   useEffect(() => {
-    const favoritesStorage =
-      localStorage.getItem(`${BASE_STORAGE}:favorite_list`) || "[]";
+    const favoritesStorage = localStorage.getItem("favorite_list") || "[]";
     const favorites = JSON.parse(favoritesStorage) as string[];
     setFavoriteList(favorites);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(
-      `${BASE_STORAGE}:favorite_list`,
-      JSON.stringify(favoriteList)
-    );
+    localStorage.setItem("favorite_list", JSON.stringify(favoriteList));
   }, [favoriteList]);
 
   const isFavorite = useCallback(

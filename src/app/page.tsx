@@ -3,39 +3,42 @@
 import Page from "@/components/layout/structure/Page";
 import Section from "@/components/layout/structure/Section";
 import HorizontalBookList from "@/components/organisms/horizontalBookList";
-import Listdata from "../../.local/list_all_books_best_sellers_sample.json";
 import SkeletonHorizontalBookList from "@/components/organisms/skeletonHorizontalBookList";
 import { useBooks } from "@/hooks/useBooks";
 import Modal from "@/components/molecules/modal";
-import { getStorageItem, setStorageItem } from "@/utils/localStorage";
 import { useCallback, useMemo, useState } from "react";
 import Button from "@/components/atoms/button";
 import Checkbox from "@/components/molecules/Checkbox";
+import { useNyTimesClient } from "@/hooks/client/nyTimesClient";
 
 export default function Home() {
-  const loading = false;
+  const { data, isLoading } = useNyTimesClient();
+
   const [openWelcome, setOpenWelcome] = useState(() => {
-    const hiddeWelcome = getStorageItem("hiddeModalWelcome");
+    const hiddeWelcome = localStorage.getItem("hiddeModalWelcome");
     return !(hiddeWelcome === "true");
   });
   const [hiddeWelcomeForever, setHiddeWelcomeForever] = useState(() => {
-    const hiddeWelcome = getStorageItem("hiddeModalWelcome");
+    const hiddeWelcome = localStorage.getItem("hiddeModalWelcome");
     return hiddeWelcome === "true";
   });
 
   const handleWelcome = useCallback(() => {
     setOpenWelcome(false);
-    setStorageItem("hiddeModalWelcome", hiddeWelcomeForever ? "true" : "false");
+    localStorage.setItem(
+      "hiddeModalWelcome",
+      hiddeWelcomeForever ? "true" : "false"
+    );
   }, [hiddeWelcomeForever, setOpenWelcome]);
 
   const { reoderListByFavorite } = useBooks();
   const bookLists = useMemo(() => {
-    return reoderListByFavorite(Listdata.results.lists as any);
-  }, [reoderListByFavorite]);
+    return data?.lists ? reoderListByFavorite(data?.lists as any) : [];
+  }, [data, reoderListByFavorite]);
 
   return (
     <Page>
-      <Modal open={openWelcome} onClose={() => {}}>
+      <Modal open={openWelcome} onClose={() => {}} suppressHydrationWarning>
         <h3 className="text-lg font-light">
           Welcome to the Ruan's Masterpiece
         </h3>
@@ -51,12 +54,11 @@ export default function Home() {
             entered.
           </p>
         </div>
-        <div className="w-2/4 flex justify-between gap-3">
+        <div className="flex-1 flex justify-between items-center gap-3">
           <Checkbox
-            onClick={() => setHiddeWelcomeForever((old) => !old)}
+            onChange={() => setHiddeWelcomeForever((old) => !old)}
             label="Do not show again"
             checked={hiddeWelcomeForever}
-            value="show-welcome"
           />
           <div>
             <Button onClick={handleWelcome}>Ok</Button>
@@ -64,12 +66,17 @@ export default function Home() {
         </div>
       </Modal>
       <Section>
-        <div>
-          <Button onClick={() => setOpenWelcome(true)}>Show welcome</Button>
+        <div className="flex justify-end">
+          <div>
+            <Button onClick={() => setOpenWelcome(true)}>Show welcome</Button>
+          </div>
         </div>
       </Section>
-      {loading ? (
+      {isLoading ? (
         <>
+          <Section>
+            <SkeletonHorizontalBookList />
+          </Section>
           <Section>
             <SkeletonHorizontalBookList />
           </Section>
