@@ -1,28 +1,21 @@
 interface CheckboxProps {
-  value: string;
   label: string;
   checked: boolean;
-  onClick: () => void;
+  onChange: () => void;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
-  value,
-  onClick,
-  checked,
-  label,
-}) => {
+const Checkbox: React.FC<CheckboxProps> = ({ onChange, checked, label }) => {
   return (
-    <div className="flex items-center mb-4" onClick={onClick}>
+    <div className="flex w-fit flex-1 items-center">
       <input
         checked={checked}
-        id={`checkbox-${value}`}
+        id={`checkbox-${label}`}
         type="checkbox"
-        value={value}
-        readOnly
-        className="w-4 h-4 text-teal-600 bg-gray-100 border-gray-300 rounded focus:ring-teal-500  focus:ring-2 "
+        onChange={onChange}
+        className="w-4 h-4  bg-gray-100 border-gray-300 rounded "
       />
       <label
-        htmlFor={`checkbox-${value}`}
+        htmlFor={`checkbox-${label}`}
         className="ml-2 text-sm font-medium text-slate-900"
       >
         {label}
