@@ -6,12 +6,15 @@ import HorizontalBookList from "@/components/organisms/horizontalBookList";
 import SkeletonHorizontalBookList from "@/components/organisms/skeletonHorizontalBookList";
 import { useBooks } from "@/hooks/useBooks";
 import Modal from "@/components/molecules/modal";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Button from "@/components/atoms/button";
 import Checkbox from "@/components/molecules/Checkbox";
 import { useNyTimesClient } from "@/hooks/client/nyTimesClient";
+import ListUpdates from "@/components/molecules/showUpdatesList";
 
 export default function Home() {
+  const { reoderListByFavorite, checkForUpdatesInList } = useBooks();
+
   const { data, isLoading } = useNyTimesClient();
 
   const [openWelcome, setOpenWelcome] = useState(() => {
@@ -23,6 +26,20 @@ export default function Home() {
     return hiddeWelcome === "true";
   });
 
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [updatedList, setUpdatedList] =
+    useState<ReturnType<typeof checkForUpdatesInList>>();
+
+  useEffect(() => {
+    if (!isLoading && data?.lists) {
+      const checkedList = checkForUpdatesInList(data?.lists);
+      if (checkedList.hasUpdate) {
+        setOpenUpdate(true);
+        setUpdatedList(checkedList);
+      }
+    }
+  }, [checkForUpdatesInList, isLoading, data]);
+
   const handleWelcome = useCallback(() => {
     setOpenWelcome(false);
     localStorage.setItem(
@@ -31,14 +48,13 @@ export default function Home() {
     );
   }, [hiddeWelcomeForever, setOpenWelcome]);
 
-  const { reoderListByFavorite } = useBooks();
   const bookLists = useMemo(() => {
     return data?.lists ? reoderListByFavorite(data?.lists as any) : [];
   }, [data, reoderListByFavorite]);
 
   return (
     <Page>
-      <Modal open={openWelcome} onClose={() => {}} suppressHydrationWarning>
+      <Modal open={openWelcome} onClose={() => {}}>
         <h3 className="text-lg font-light">
           Welcome to the Ruan's Masterpiece
         </h3>
@@ -53,6 +69,23 @@ export default function Home() {
             will track the changes from the list, if a book was out or a new
             entered.
           </p>
+          <div className="m-auto w-3/4 lg:w-2/4 my-4 ">
+            <ListUpdates
+              listName="Tech books"
+              newBooks={[
+                { title: "HOMO DEUS" },
+                { title: "CLEAN CODE" },
+                { title: "DOMAIN DRIVEN DESIGN" },
+              ]}
+              outBooks={[
+                { title: "PRAGMATIC PROGRAMMER" },
+                {
+                  title:
+                    "Design Patterns: Elements of Reusable Object-Oriented Software",
+                },
+              ]}
+            />
+          </div>
         </div>
         <div className="flex-1 flex justify-between items-center gap-3">
           <Checkbox
@@ -65,8 +98,39 @@ export default function Home() {
           </div>
         </div>
       </Modal>
+
+      <Modal open={openUpdate} onClose={() => setOpenUpdate(false)}>
+        <h3 className="text-lg font-light">
+          There is a update on your favorite lists!
+        </h3>
+        <div className="w-full my-4">
+          <p className="text-center">
+            Some of the list you favorited has a update, check then below!
+          </p>
+        </div>
+        <div className="w-3/4 lg:w-2/4 my-4 overflow-scroll h-2/3">
+          {updatedList &&
+            updatedList.lists.map((list) => (
+              <ListUpdates
+                key={list.name}
+                listName={list.name}
+                newBooks={list.news}
+                outBooks={list.out}
+              />
+            ))}
+        </div>
+        <div className="flex-1 flex justify-between items-center gap-3">
+          <div>
+            <Button onClick={() => setOpenUpdate(false)}>Ok</Button>
+          </div>
+        </div>
+      </Modal>
+
       <Section>
         <div className="flex justify-end">
+          <div>
+            <Button onClick={() => setOpenUpdate(true)}>Show updates</Button>
+          </div>
           <div>
             <Button onClick={() => setOpenWelcome(true)}>Show welcome</Button>
           </div>
@@ -90,7 +154,7 @@ export default function Home() {
       ) : (
         bookLists.map((list) => (
           <Section key={list.list_id}>
-            <HorizontalBookList name={list.display_name} books={list.books} />
+            <HorizontalBookList listBooks={list} />
           </Section>
         ))
       )}
