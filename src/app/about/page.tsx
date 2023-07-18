@@ -2,7 +2,6 @@
 
 import Page from "@/components/layout/structure/Page";
 import Section from "@/components/layout/structure/Section";
-import HorizontalBookList from "@/components/organisms/horizontalBookList";
 import Link from "next/link";
 
 export default function About() {

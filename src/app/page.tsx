@@ -53,36 +53,37 @@ export default function Home() {
   return (
     <Page>
       <Modal open={openWelcome} onClose={() => {}}>
-        <h3 className="text-lg font-light">
-          {`Welcome to the Ruan's Masterpiece`}
+        <h3 className="text-center text-lg md:text-2xl font-bold">
+          New York Times Best Sellers
         </h3>
-        <h3 className="text-2xl font-bold">New York Times Best Sellers</h3>
-        <div className="w-full my-4">
-          <p>
-            In this application, you can be up to date with all the best sellers
-            books out there!
-          </p>
-          <p>
-            You can add a specific list into your favorites and our application
-            will track the changes from the list, if a book was out or a new
-            entered.
-          </p>
-          <div className="m-auto w-3/4 lg:w-2/4 my-4 ">
-            <ListUpdates
-              listName="Tech books"
-              newBooks={[
-                { title: "HOMO DEUS" },
-                { title: "CLEAN CODE" },
-                { title: "DOMAIN DRIVEN DESIGN" },
-              ]}
-              outBooks={[
-                { title: "PRAGMATIC PROGRAMMER" },
-                {
-                  title:
-                    "Design Patterns: Elements of Reusable Object-Oriented Software",
-                },
-              ]}
-            />
+        <div className="overflow-scroll">
+          <div className="w-full my-4">
+            <p>
+              In this application, you can be up to date with all the best
+              sellers books out there!
+            </p>
+            <p>
+              You can add a specific list into your favorites and our
+              application will track the changes from the list, if a book was
+              out or a new entered.
+            </p>
+            <div className="md:m-auto w-3/4 lg:w-2/4 my-4 ">
+              <ListUpdates
+                listName="Tech books"
+                newBooks={[
+                  { title: "HOMO DEUS" },
+                  { title: "CLEAN CODE" },
+                  { title: "DOMAIN DRIVEN DESIGN" },
+                ]}
+                outBooks={[
+                  { title: "PRAGMATIC PROGRAMMER" },
+                  {
+                    title:
+                      "Design Patterns: Elements of Reusable Object-Oriented Software",
+                  },
+                ]}
+              />
+            </div>
           </div>
         </div>
         <div className="flex-1 flex justify-between items-center gap-3">
@@ -99,14 +100,18 @@ export default function Home() {
 
       <Modal open={openUpdate} onClose={() => setOpenUpdate(false)}>
         <h3 className="text-lg font-light">
-          There is a update on your favorite lists!
+          {updatedList?.hasUpdate
+            ? "There is a update on your favorite lists!"
+            : "Check any updates bellow"}
         </h3>
         <div className="w-full my-4">
           <p className="text-center">
-            Some of the list you favorited has a update, check then below!
+            {updatedList?.hasUpdate
+              ? "There is a update since your last visite!"
+              : "Looks like there is no update."}
           </p>
         </div>
-        <div className="w-3/4 lg:w-2/4 my-4 overflow-scroll h-2/3">
+        <div className="w-full lg:w-2/4 my-4 overflow-scroll h-2/3">
           {updatedList &&
             updatedList.lists.map((list) => (
               <ListUpdates
