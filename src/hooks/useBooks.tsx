@@ -5,12 +5,27 @@ import React, {
   useCallback,
   useEffect,
 } from "react";
-import { ListBookDto } from "./client/dtos";
+import { BookDto, ListBookDto } from "./client/dtos";
 
+interface TrackBook {
+  uri: string;
+}
 interface BooksContextData {
-  toggleFavoriteList(listName: string): void;
+  toggleFavoriteList(list: ListBookDto): void;
   isFavorite(listName: string): boolean;
   reoderListByFavorite(bookList: ListBookDto[]): ListBookDto[];
+  checkForUpdatesInList: (lists: ListBookDto[]) => {
+    hasUpdate: boolean;
+    lists: {
+      name: string;
+      news: {
+        title: string;
+      }[];
+      out: {
+        title: string;
+      }[];
+    }[];
+  };
 }
 
 interface BooksProvider {
@@ -37,21 +52,6 @@ const BooksProvider: React.FC<BooksProvider> = ({ children }) => {
     [favoriteList]
   );
 
-  const toggleFavoriteList = useCallback(
-    (listName: string) => {
-      const isAlreadyFavorite = isFavorite(listName);
-
-      if (isAlreadyFavorite) {
-        setFavoriteList((old) => [
-          ...old.filter((value) => value !== listName),
-        ]);
-      } else {
-        setFavoriteList((old) => [...old, listName]);
-      }
-    },
-    [isFavorite]
-  );
-
   const reoderListByFavorite = useCallback(
     (bookList: ListBookDto[]) => {
       return bookList.sort((a, b) => (isFavorite(a.display_name) ? -1 : 0));
@@ -59,9 +59,115 @@ const BooksProvider: React.FC<BooksProvider> = ({ children }) => {
     [isFavorite]
   );
 
+  const getLocalFavoriteBooks = useCallback((listName: string): TrackBook[] => {
+    const bookList = localStorage.getItem(`favorite_list:${listName}:order`);
+
+    return bookList ? JSON.parse(bookList) : undefined;
+  }, []);
+
+  const setFavoriteBooks = useCallback((list: ListBookDto) => {
+    const books = list.books.map((book) => ({
+      uri: book.book_uri,
+      title: book.title,
+    }));
+    localStorage.setItem(
+      `favorite_list:${list.list_name}:order`,
+      JSON.stringify(books)
+    );
+  }, []);
+
+  const unSetFavoriteBooks = useCallback((list: ListBookDto) => {
+    localStorage.removeItem(`favorite_list:${list.list_name}:order`);
+  }, []);
+
+  const diffBooks = (
+    listA: { list: any[]; key: string },
+    listB: { list: any[]; key: string }
+  ) => {
+    const diff = {
+      includes: [] as { title: string }[],
+      notIncludes: [] as { title: string }[],
+    };
+    listA.list.forEach((book) => {
+      const inLocalList = listB.list.some(
+        (localBook) => localBook[listB.key] === book[listA.key]
+      );
+      if (inLocalList) {
+        diff.includes.push({ title: book.title });
+      } else {
+        diff.notIncludes.push({ title: book.title });
+      }
+    });
+    return diff;
+  };
+
+  const checkForUpdatesInList = useCallback(
+    (lists: ListBookDto[]) => {
+      let hasUpdate = false;
+      const favoriteLists = lists.filter((list) => isFavorite(list.list_name));
+
+      const checkedLists = favoriteLists.map((favList) => {
+        const localBooksList = getLocalFavoriteBooks(favList.list_name);
+
+        const checkForNewBooks = diffBooks(
+          { list: favList.books, key: "book_uri" },
+          {
+            list: localBooksList,
+            key: "uri",
+          }
+        );
+
+        const checkForOutBooks = diffBooks(
+          {
+            list: localBooksList,
+            key: "uri",
+          },
+          { list: favList.books, key: "book_uri" }
+        );
+
+        if (
+          checkForNewBooks.notIncludes.length > 0 ||
+          checkForOutBooks.notIncludes.length > 0
+        ) {
+          hasUpdate = true;
+          setFavoriteBooks(favList);
+        }
+        return {
+          name: favList.list_name,
+          news: checkForNewBooks.notIncludes,
+          out: checkForOutBooks.notIncludes,
+        };
+      });
+
+      return { hasUpdate, lists: checkedLists };
+    },
+    [isFavorite, getLocalFavoriteBooks, setFavoriteBooks]
+  );
+
+  const toggleFavoriteList = useCallback(
+    (list: ListBookDto) => {
+      const isAlreadyFavorite = isFavorite(list.list_name);
+      if (isAlreadyFavorite) {
+        setFavoriteList((old) => [
+          ...old.filter((value) => value !== list.list_name),
+        ]);
+        unSetFavoriteBooks(list);
+      } else {
+        setFavoriteList((old) => [...old, list.list_name]);
+        setFavoriteBooks(list);
+      }
+    },
+    [isFavorite, setFavoriteBooks, unSetFavoriteBooks]
+  );
+
   return (
     <BooksContext.Provider
-      value={{ toggleFavoriteList, isFavorite, reoderListByFavorite }}
+      value={{
+        toggleFavoriteList,
+        isFavorite,
+        reoderListByFavorite,
+        checkForUpdatesInList,
+      }}
     >
       {children}
     </BooksContext.Provider>
