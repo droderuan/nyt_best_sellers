@@ -56,7 +56,7 @@ export default function Home() {
         <h3 className="text-center text-lg md:text-2xl font-bold">
           New York Times Best Sellers
         </h3>
-        <div className="overflow-scroll">
+        <div className="overflow-y-auto">
           <div className="w-full my-4">
             <p>
               In this application, you can be up to date with all the best
@@ -98,7 +98,7 @@ export default function Home() {
         </div>
       </Modal>
 
-      <Modal open={openUpdate} onClose={() => setOpenUpdate(false)}>
+      <Modal open={openUpdate} onClose={() => {}}>
         <h3 className="text-lg font-light">
           {updatedList?.hasUpdate
             ? "There is a update on your favorite lists!"
@@ -111,7 +111,7 @@ export default function Home() {
               : "Looks like there is no update."}
           </p>
         </div>
-        <div className="w-full lg:w-2/4 my-4 overflow-scroll h-2/3">
+        <div className="w-full lg:w-2/4 my-4 overflow-y-auto h-2/3">
           {updatedList &&
             updatedList.lists.map((list) => (
               <ListUpdates
