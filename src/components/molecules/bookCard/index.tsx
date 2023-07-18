@@ -1,7 +1,7 @@
-import { BookDto } from "@/client/dtos";
 import Chip from "@/components/atoms/chip";
 import Skeleton from "@/components/atoms/skeleton";
 import SpanDisplay from "@/components/atoms/spanDisplay";
+import { BookDto } from "@/hooks/client/dtos";
 import Image from "next/image";
 import { Suspense } from "react";
 

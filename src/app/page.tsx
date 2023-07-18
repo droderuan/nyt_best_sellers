@@ -11,6 +11,7 @@ import Button from "@/components/atoms/button";
 import Checkbox from "@/components/molecules/Checkbox";
 import { useNyTimesClient } from "@/hooks/client/nyTimesClient";
 import ListUpdates from "@/components/molecules/showUpdatesList";
+import { getStorageItem, setStorageItem } from "@/utils/myLocalStorage";
 
 export default function Home() {
   const { reoderListByFavorite, checkForUpdatesInList } = useBooks();
@@ -18,11 +19,11 @@ export default function Home() {
   const { data, isLoading } = useNyTimesClient();
 
   const [openWelcome, setOpenWelcome] = useState(() => {
-    const hiddeWelcome = localStorage.getItem("hiddeModalWelcome");
+    const hiddeWelcome = getStorageItem("hiddeModalWelcome");
     return !(hiddeWelcome === "true");
   });
   const [hiddeWelcomeForever, setHiddeWelcomeForever] = useState(() => {
-    const hiddeWelcome = localStorage.getItem("hiddeModalWelcome");
+    const hiddeWelcome = getStorageItem("hiddeModalWelcome");
     return hiddeWelcome === "true";
   });
 
@@ -42,10 +43,7 @@ export default function Home() {
 
   const handleWelcome = useCallback(() => {
     setOpenWelcome(false);
-    localStorage.setItem(
-      "hiddeModalWelcome",
-      hiddeWelcomeForever ? "true" : "false"
-    );
+    setStorageItem("hiddeModalWelcome", hiddeWelcomeForever ? "true" : "false");
   }, [hiddeWelcomeForever, setOpenWelcome]);
 
   const bookLists = useMemo(() => {

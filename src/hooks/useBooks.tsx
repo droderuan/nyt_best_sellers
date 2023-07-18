@@ -1,3 +1,8 @@
+import {
+  getStorageItem,
+  removeStorageItem,
+  setStorageItem,
+} from "@/utils/myLocalStorage";
 import React, {
   createContext,
   useState,
@@ -38,13 +43,13 @@ const BooksProvider: React.FC<BooksProvider> = ({ children }) => {
   const [favoriteList, setFavoriteList] = useState<string[]>([]);
 
   useEffect(() => {
-    const favoritesStorage = localStorage.getItem("favorite_list") || "[]";
+    const favoritesStorage = getStorageItem("favorite_list") || "[]";
     const favorites = JSON.parse(favoritesStorage) as string[];
     setFavoriteList(favorites);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("favorite_list", JSON.stringify(favoriteList));
+    setStorageItem("favorite_list", JSON.stringify(favoriteList));
   }, [favoriteList]);
 
   const isFavorite = useCallback(
@@ -60,7 +65,7 @@ const BooksProvider: React.FC<BooksProvider> = ({ children }) => {
   );
 
   const getLocalFavoriteBooks = useCallback((listName: string): TrackBook[] => {
-    const bookList = localStorage.getItem(`favorite_list:${listName}:order`);
+    const bookList = getStorageItem(`favorite_list:${listName}:order`);
 
     return bookList ? JSON.parse(bookList) : undefined;
   }, []);
@@ -70,14 +75,14 @@ const BooksProvider: React.FC<BooksProvider> = ({ children }) => {
       uri: book.book_uri,
       title: book.title,
     }));
-    localStorage.setItem(
+    setStorageItem(
       `favorite_list:${list.list_name}:order`,
       JSON.stringify(books)
     );
   }, []);
 
   const unSetFavoriteBooks = useCallback((list: ListBookDto) => {
-    localStorage.removeItem(`favorite_list:${list.list_name}:order`);
+    removeStorageItem(`favorite_list:${list.list_name}:order`);
   }, []);
 
   const diffBooks = (

@@ -1,7 +1,5 @@
-import { BookDto } from "@/client/dtos";
 import Skeleton from "@/components/atoms/skeleton";
 import SkeletonBookCard from "@/components/molecules/skeletonBookCard";
-import BookCard, { BookCardProps } from "../../molecules/bookCard";
 
 const SkeletonHorizontalBookList: React.FC = () => {
   return (
