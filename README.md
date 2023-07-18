@@ -3,6 +3,8 @@
 Hi there, welcome to my React project, using next.js, for listing the best sellers book at New York Times.
 My intend to this project is to show my hability use the React core conceptions and follow a mature code design.
 
+You can visit the site accessing: https://nyt-best-sellers-bp0h39kni-droderuan.vercel.app/
+
 ## What to expect
 
 You can expect a good and responsive design, as well with a good UX. I have a strong thinking of clean code, so I'm always triying to create code that is easy and elegant to read.

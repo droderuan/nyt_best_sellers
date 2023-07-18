@@ -3,8 +3,8 @@
 import Button from "@/components/atoms/button";
 import SvgIcon from "@/components/atoms/svgIcon";
 import Link from "next/link";
-import React from "react";
 import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
+import { usePathname } from "next/navigation";
 
 interface MainTemplate {
   appName: string;
@@ -12,6 +12,8 @@ interface MainTemplate {
 }
 
 const MainTemplate: React.FC<MainTemplate> = ({ appName, children }) => {
+  const pathName = usePathname();
+
   return (
     <body className="w-full font-sans bg-slate-50 text-slate-900 min-h-[100vh]">
       <header className="w-full h-20  md:h-28 ">
@@ -20,10 +22,10 @@ const MainTemplate: React.FC<MainTemplate> = ({ appName, children }) => {
             {appName}
           </h1>
           <div className="flex items-center gap-2">
-            <Button disabled>
+            <Button disabled={pathName === "/"}>
               <Link href={"/"}>Books</Link>
             </Button>
-            <Button>
+            <Button disabled={pathName === "/about"}>
               <Link href={"/about"}>About</Link>
             </Button>
           </div>
