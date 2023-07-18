@@ -56,7 +56,7 @@ export default function Home() {
     <Page>
       <Modal open={openWelcome} onClose={() => {}}>
         <h3 className="text-lg font-light">
-          Welcome to the Ruan's Masterpiece
+          {`Welcome to the Ruan's Masterpiece`}
         </h3>
         <h3 className="text-2xl font-bold">New York Times Best Sellers</h3>
         <div className="w-full my-4">
