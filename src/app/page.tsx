@@ -107,7 +107,7 @@ export default function Home() {
         <div className="w-full my-4">
           <p className="text-center">
             {updatedList?.hasUpdate
-              ? "There is a update since your last visite!"
+              ? "There is a update since your last visit!"
               : "Looks like there is no update."}
           </p>
         </div>
