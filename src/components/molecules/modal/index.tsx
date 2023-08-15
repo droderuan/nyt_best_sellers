@@ -6,7 +6,7 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ open, onClose, children }) => {
   const styles = `fixed ${
-    !open ? "hidden" : ""
+    open ? "" : "hidden"
   } top-0 left-0 z-50 w-screen h-screen backdrop-blur flex flex-col items-center justify-center`;
 
   return (

@@ -44,7 +44,7 @@ export default function Home() {
   const handleWelcome = useCallback(() => {
     setOpenWelcome(false);
     setStorageItem("hiddeModalWelcome", hiddeWelcomeForever ? "true" : "false");
-  }, [hiddeWelcomeForever, setOpenWelcome]);
+  }, [hiddeWelcomeForever]);
 
   const bookLists = useMemo(() => {
     return data?.lists ? reoderListByFavorite(data?.lists as any) : [];
