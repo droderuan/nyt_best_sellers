@@ -18,10 +18,7 @@ export default function Home() {
 
   const { data, isLoading } = useNyTimesClient();
 
-  const [openWelcome, setOpenWelcome] = useState(() => {
-    const hiddeWelcome = getStorageItem("hiddeModalWelcome");
-    return !(hiddeWelcome === "true");
-  });
+  const [openWelcome, setOpenWelcome] = useState(false);
   const [hiddeWelcomeForever, setHiddeWelcomeForever] = useState(() => {
     const hiddeWelcome = getStorageItem("hiddeModalWelcome");
     return hiddeWelcome === "true";
@@ -30,6 +27,11 @@ export default function Home() {
   const [openUpdate, setOpenUpdate] = useState(false);
   const [updatedList, setUpdatedList] =
     useState<ReturnType<typeof checkForUpdatesInList>>();
+
+  useEffect(() => {
+    const hiddeWelcome = getStorageItem("hiddeModalWelcome");
+    setOpenWelcome(!(hiddeWelcome === "true"));
+  }, []);
 
   useEffect(() => {
     if (!isLoading && data?.lists) {
